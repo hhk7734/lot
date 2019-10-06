@@ -21,7 +21,7 @@ case "$1" in
         fi
 
         if [ "${DEVICE}" != "Unknown" ]; then
-            apt-get purge -y lot-${DEVICE}
+            apt-get install -y lot-${DEVICE}
         else
             printf "Failed to install lot-SBC, Unknown device.\n"
             exit 1
