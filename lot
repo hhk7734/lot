@@ -1,0 +1,35 @@
+#!/bin/sh
+
+if [ "x${SUDO_USER}" = "x" ]; then
+    export SUDO_USER=root
+fi
+
+if [ -e '/usr/lib/lot-scripts' ]; then
+    . /usr/lib/lot-scripts/*
+else
+    printf "Failed to find /usr/lib/lot-scripts."
+    exit 1
+fi
+
+DEVICE=$(do_detect_board)
+
+case "$1" in
+    install)
+        if [ "$(id -u)" -ne 0 ]; then
+            printf "Must run as root privileges. Try 'sudo lot install'\n"
+            exit 1
+        fi
+
+        if [ "${DEVICE}" != "Unknown" ]; then
+            apt-get purge -y lot-${DEVICE}
+        else
+            printf "Failed to install lot-SBC, Unknown device.\n"
+            exit 1
+        fi
+    ;;
+
+    *)
+        printf "Unknown argument '$1'\n" >&2
+        exit 1
+    ;;
+esac
