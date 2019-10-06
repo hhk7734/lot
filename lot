@@ -5,7 +5,7 @@ if [ "x${SUDO_USER}" = "x" ]; then
 fi
 
 if [ -e '/usr/lib/lot-scripts' ]; then
-    . /usr/lib/lot-scripts/*
+    . /usr/lib/lot-scripts/detect_board
 else
     printf "Failed to find /usr/lib/lot-scripts."
     exit 1
@@ -14,22 +14,26 @@ fi
 DEVICE=$(do_detect_board)
 
 case "$1" in
-    install)
+    install|uninstall)
         if [ "$(id -u)" -ne 0 ]; then
-            printf "Must run as root privileges. Try 'sudo lot install'\n"
+            printf "Must run as root privileges. Try 'sudo lot %s'\n" "$1"
             exit 1
         fi
 
         if [ "${DEVICE}" != "Unknown" ]; then
-            apt-get install -y lot-${DEVICE}
+            if [ "$1" = "install" ];then 
+                apt-get install -y lot-"${DEVICE}"
+            else
+                apt-get purge -y lot-"${DEVICE}"
+            fi
         else
-            printf "Failed to install lot-SBC, Unknown device.\n"
+            printf "Failed to %s lot-SBC, Unknown device.\n" "$1"
             exit 1
         fi
     ;;
 
     *)
-        printf "Unknown argument '$1'\n" >&2
+        printf "Unknown argument '%s'\n" "$1" >&2
         exit 1
     ;;
 esac
