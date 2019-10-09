@@ -21,7 +21,8 @@ case "$1" in
         fi
 
         if [ "${DEVICE}" != "Unknown" ]; then
-            if [ "$1" = "install" ];then 
+            if [ "$1" = "install" ];then
+                apt-get update
                 apt-get install -y lot-"${DEVICE}"
             else
                 apt-get purge -y lot-"${DEVICE}"
