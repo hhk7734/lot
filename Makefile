@@ -40,6 +40,7 @@ install:
 	install -m 0644 $(call rwildcard,lot-scripts,*.sh) $(DESTDIR)$(prefix)/lib/lot-scripts
 	install -m 0755 -d $(DESTDIR)$(prefix)/bin
 	install -m 0755 lot lot-config $(DESTDIR)$(prefix)/bin
+	sed -i 's/^LOT_VERSION=.*$$/LOT_VERSION=${VERSION}/' $(DESTDIR)$(prefix)/bin/lot
 	install -m 0755 -d $(DESTDIR)/etc/udev/rules.d
 	install -m 0644 51-lot.rules $(DESTDIR)/etc/udev/rules.d
 	grep -q dialout: /etc/group || addgroup dialout

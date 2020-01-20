@@ -27,6 +27,8 @@
 # Enable/Disable Spi, I2c, Uart, Etc.
 # Pin number/function/status/mode/Etc.
 
+LOT_VERSION=
+
 BLACK=$(tput setaf 0)
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -90,8 +92,12 @@ case "$1" in
         fi
     ;;
 
+    -v|--version)
+        printf "Version: %s\n" ${LOT_VERSION}
+    ;;
+
     *)
-        printf "Unknown argument '%s'\n" "$1" >&2
+        printf "%s '%s'\n\n" "${RED}${BOLD}Unknown command:${DEFAULT}" "$1" >&2
         exit 1
     ;;
 esac
