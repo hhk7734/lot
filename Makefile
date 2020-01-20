@@ -33,6 +33,7 @@ endif
 
 .PHONY: all
 all:
+	@:
 
 .PHONY: install
 install:
