@@ -22,9 +22,6 @@
 
 prefix = /usr
 
-VERSION = $(shell head -n1 debian/changelog | sed 's/.* .\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
-MAJOR   = $(shell echo $(VERSION) | sed 's/\([0-9]*\)\..*/\1/')
-
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 ifeq ($(strip ${SUDO_USER}),)
@@ -37,19 +34,21 @@ all:
 
 .PHONY: install
 install:
-	install -m 0755 -d $(DESTDIR)$(prefix)/lib/lot-scripts
-	install -m 0644 $(call rwildcard,lot-scripts,*.sh) $(DESTDIR)$(prefix)/lib/lot-scripts
-	install -m 0755 -d $(DESTDIR)$(prefix)/bin
-	install -m 0755 lot lot-config $(DESTDIR)$(prefix)/bin
-	sed -i 's/^LOT_VERSION=.*$$/LOT_VERSION=${VERSION}/' $(DESTDIR)$(prefix)/bin/lot
 	install -m 0755 -d $(DESTDIR)/etc/udev/rules.d
+	install -m 0755 -d $(DESTDIR)$(prefix)/bin
+	install -m 0755 -d $(DESTDIR)$(prefix)/lib/lot
+	install -m 0755 -d $(DESTDIR)/var/lib/lot/lists/lot/debian
 	install -m 0644 51-lot.rules $(DESTDIR)/etc/udev/rules.d
-	grep -q dialout: /etc/group || addgroup dialout
-	grep -q spi: /etc/group || addgroup spi
-	grep -q i2c: /etc/group || addgroup i2c
-	groups ${SUDO_USER} | grep -q dialout || usermod -aG dialout ${SUDO_USER}
-	groups ${SUDO_USER} | grep -q spi || usermod -aG spi ${SUDO_USER}
-	groups ${SUDO_USER} | grep -q i2c || usermod -aG i2c ${SUDO_USER}
+	install -m 0755 lot lot-config $(DESTDIR)$(prefix)/bin
+	install -m 0644 $(call rwildcard,scripts,*.sh) $(DESTDIR)$(prefix)/lib/lot
+	install -m 0644 debian/changelog $(DESTDIR)/var/lib/lot/lists/lot/debian
+	install -m 0755 Makefile $(DESTDIR)/var/lib/lot/lists/lot
+	grep -q dialout: /etc/group || addgroup dialout \
+	&& (groups ${SUDO_USER} | grep -q dialout || usermod -aG dialout ${SUDO_USER})
+	grep -q spi: /etc/group || addgroup spi \
+	&& (groups ${SUDO_USER} | grep -q spi || usermod -aG spi ${SUDO_USER})
+	grep -q i2c: /etc/group || addgroup i2c \
+	&& (groups ${SUDO_USER} | grep -q i2c || usermod -aG i2c ${SUDO_USER})
 
 .PHONY: clean
 clean:
@@ -59,11 +58,14 @@ distclean: clean
 
 .PHONY: uninstall
 uninstall:
-	rm -rf $(DESTDIR)$(prefix)/lib/lot-scripts
+	rm -f $(DESTDIR)/etc/udev/rules.d/51-lot.rules
 	rm -f $(DESTDIR)$(prefix)/bin/lot
 	rm -f $(DESTDIR)$(prefix)/bin/lot-config
-	rm -f $(DESTDIR)/etc/udev/rules.d/51-lot.rules
+	rm -rf $(DESTDIR)$(prefix)/lib/lot
+	whiptail --yesno "Would you like to remove lot-lists?" 20 60 \
+	&& rm -rf $(DESTDIR)/var/lib/lot \
+	|| rm -rf $(DESTDIR)/var/lib/lot/lists/lot
 
 .PHONY: sc
 sc:
-	shellcheck lot-scripts/* lot lot-config
+	shellcheck scripts/* lot lot-config
