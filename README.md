@@ -11,8 +11,23 @@ sudo apt update
 sudo apt install lot
 ```
 
-## lot C++ Installation
+## Structure
 
 ```bash
-sudo lot install
+/etc/udev/rules.d
+├── 51-lot.rules
+/usr/bin
+├── lot
+├── lot-config
+/usr/lib/lot
+├── detect_device.sh
+├── ...
+/var/lib/lot
+├── (lock)
+├── lists
+│   ├── lot
+│   │   ├── debian/changelog
+│   │   └── Makefile
+│   └── ...
+└── ...
 ```
