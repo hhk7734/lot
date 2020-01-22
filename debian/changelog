@@ -1,3 +1,11 @@
+lot (0.2.0) unstable; urgency=medium
+
+  * Update Makefile
+  * Refactor and Implement install/uninstall/update
+  * Add text color and lot script
+
+ -- Hyeonki Hong <hhk7734@gmail.com>  Wed, 22 Jan 2020 19:14:21 +0900
+
 lot (0.1.0) unstable; urgency=medium
 
   * Create udev rules file
