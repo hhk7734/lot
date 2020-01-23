@@ -43,12 +43,6 @@ install:
 	install -m 0644 $(call rwildcard,scripts,*.sh) $(DESTDIR)$(prefix)/lib/lot
 	install -m 0644 debian/changelog $(DESTDIR)/var/lib/lot/lists/lot/debian
 	install -m 0755 Makefile $(DESTDIR)/var/lib/lot/lists/lot
-	grep -q dialout: /etc/group || addgroup dialout \
-	&& (groups ${SUDO_USER} | grep -q dialout || usermod -aG dialout ${SUDO_USER})
-	grep -q spi: /etc/group || addgroup spi \
-	&& (groups ${SUDO_USER} | grep -q spi || usermod -aG spi ${SUDO_USER})
-	grep -q i2c: /etc/group || addgroup i2c \
-	&& (groups ${SUDO_USER} | grep -q i2c || usermod -aG i2c ${SUDO_USER})
 
 .PHONY: clean
 clean:
@@ -66,6 +60,17 @@ uninstall:
 	&& rm -rf $(DESTDIR)/var/lib/lot \
 	|| rm -rf $(DESTDIR)/var/lib/lot/lists/lot
 
+# shellcheck
 .PHONY: sc
 sc:
 	shellcheck scripts/* lot lot-config
+
+# group management
+.PHONY: gm
+gm:
+	grep -q dialout: /etc/group || addgroup dialout \
+	&& (groups ${SUDO_USER} | grep -q dialout || usermod -aG dialout ${SUDO_USER})
+	grep -q spi: /etc/group || addgroup spi \
+	&& (groups ${SUDO_USER} | grep -q spi || usermod -aG spi ${SUDO_USER})
+	grep -q i2c: /etc/group || addgroup i2c \
+	&& (groups ${SUDO_USER} | grep -q i2c || usermod -aG i2c ${SUDO_USER})

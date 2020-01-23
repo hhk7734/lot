@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+configure)
+    if [ -z "${SUDO_USER}" ]; then
+        SUDO_USER=${USER}
+    fi
+    if [ -e "/etc/udev/rules.d/51-lot.rules" ]; then
+        grep -q dialout: /etc/group || addgroup dialout &&
+            (groups "${SUDO_USER}" | grep -q dialout || usermod -aG dialout "${SUDO_USER}")
+        grep -q spi: /etc/group || addgroup spi &&
+            (groups "${SUDO_USER}" | grep -q spi || usermod -aG spi "${SUDO_USER}")
+        grep -q i2c: /etc/group || addgroup i2c &&
+            (groups "${SUDO_USER}" | grep -q i2c || usermod -aG i2c "${SUDO_USER}")
+    fi
+    ;;
+
+abort-upgrade | abort-remove | abort-deconfigure) ;;
+
+*)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
