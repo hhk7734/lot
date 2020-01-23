@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-do_detect_board()
+get_device_name()
 {
     [ -e "/proc/device-tree/model" ] &&
     DEVICE="$(cat /proc/device-tree/model)"
