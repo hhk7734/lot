@@ -73,6 +73,7 @@ do_detect_os() {
 
 readonly LOT_OS=$(do_detect_os)
 readonly LOT_DEVICE=$(do_detect_board)
+readonly LOT_CPP_PACKAGE=lot-${LOT_DEVICE}
 
 printf "\n%s\n" "${CYAN}${BOLD}USER:   ${SUDO_USER}${DEFAULT}"
 printf "%s\n" "${CYAN}${BOLD}OS:     ${LOT_OS}${DEFAULT}"
@@ -168,7 +169,7 @@ do_unlock() {
     fi
 }
 
-do_git_install(){
+do_git_install() {
     if [ -e /tmp/lot_clone ]; then rm -rf "/tmp/lot_clone"; fi
     install -m 0755 -d /tmp/lot_clone
     CLONE_PATH="/tmp/lot_clone/$1"
@@ -198,25 +199,9 @@ do_install() {
     fi
 
     case "$1" in
-    cpp | c++)
-        L_CPP_PACKAGE=lot-${LOT_DEVICE}
-        L_CURRENT_VERSION=$(get_version "${L_CPP_PACKAGE}")
-        L_LATEST_VERSION=$(get_remote_version "${L_CPP_PACKAGE}")
-        if [ "${L_CURRENT_VERSION}" = "${L_LATEST_VERSION}" ]; then
-            printf "%s%s(cpp) is already up to date (v%s).%s\n" \
-                "${RED}${BOLD}" "${L_CPP_PACKAGE}" "${L_LATEST_VERSION}" \
-                "${DEFAULT}" >&2
-            do_unlock
-            return 1
-        else
-            if [ -n "${L_CURRENT_VERSION}" ]; then
-                printf "%sUpdate version from v%s to v%s.%s\n" \
-                    "${ORANGE}${BOLD}" "${L_CURRENT_VERSION}" \
-                    "${L_LATEST_VERSION}" "${DEFAULT}"
-            fi
-        fi
-
-        do_git_install "${L_CPP_PACKAGE}"
+    cpp | c++ | ${LOT_CPP_PACKAGE})
+        do_version_check "${LOT_CPP_PACKAGE}"
+        do_git_install "${LOT_CPP_PACKAGE}"
         ;;
 
     *)
@@ -233,14 +218,13 @@ do_uninstall() {
     if ! do_lock; then return 1; fi
 
     case "$1" in
-    cpp | c++)
-        L_CPP_PACKAGE=lot-${LOT_DEVICE}
-        if [ -e "${LOT_LISTS_PATH}/${L_CPP_PACKAGE}" ]; then
-            make -C "${LOT_LISTS_PATH}/${L_CPP_PACKAGE}" uninstall &&
-                rm -rf "${LOT_LISTS_PATH:?}/${L_CPP_PACKAGE}"
+    cpp | c++ | ${LOT_CPP_PACKAGE})
+        if [ -e "${LOT_LISTS_PATH}/${LOT_CPP_PACKAGE}" ]; then
+            make -C "${LOT_LISTS_PATH}/${LOT_CPP_PACKAGE}" uninstall &&
+                rm -rf "${LOT_LISTS_PATH:?}/${LOT_CPP_PACKAGE}"
         else
             printf "%s%s(cpp) is not installed.%s\n" \
-                "${RED}${BOLD}" "${L_CPP_PACKAGE}" "${DEFAULT}" >&2
+                "${RED}${BOLD}" "${LOT_CPP_PACKAGE}" "${DEFAULT}" >&2
             do_unlock
             return 1
         fi
@@ -261,11 +245,10 @@ do_update() {
     if ! do_lock; then return 1; fi
 
     case "$1" in
-    cpp | c++)
-        L_CPP_PACKAGE=lot-${LOT_DEVICE}
-        if ! [ -e "${LOT_LISTS_PATH}/${L_CPP_PACKAGE}" ]; then
+    cpp | c++ | ${LOT_CPP_PACKAGE})
+        if ! [ -e "${LOT_LISTS_PATH}/${LOT_CPP_PACKAGE}" ]; then
             printf "%s%s(cpp) is not installed.%s\n" \
-                "${RED}${BOLD}" "${L_CPP_PACKAGE}" "${DEFAULT}" >&2
+                "${RED}${BOLD}" "${LOT_CPP_PACKAGE}" "${DEFAULT}" >&2
             do_unlock
             return 1
         fi
