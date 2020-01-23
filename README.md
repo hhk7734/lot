@@ -2,13 +2,25 @@
 
 ## Installation
 
+### PPA
+
 ```bash
-sudo add-apt-repository -y ppa:loliot/ppa &&\
-sudo apt update
+sudo add-apt-repository -y ppa:loliot/ppa \
+&& sudo apt update
 ```
 
 ```bash
 sudo apt install lot
+```
+
+### Manual
+
+```bash
+git clone https://github.com/loliot/lot.git \
+&& cd lot \
+&& sudo make install \
+&& sudo make gm \
+&& cd .. && sudo rm -rf lot
 ```
 
 ## Structure
