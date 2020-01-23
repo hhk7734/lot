@@ -307,7 +307,7 @@ update)
         package=$(echo "${package}" | sed 's/\/var\/lib\/lot\/lists\/\(.*\)/\1/')
         L_string="${L_string}${package}|v$(get_version "${package}")\n"
     done
-    echo "${ORANGE}${BOLD}${L_string}${BOLD}" | column -t -s "|"
+    echo "${ORANGE}${BOLD}${L_string}${DEFAULT}" | column -t -s "|"
     ;;
 
 "") ;;
