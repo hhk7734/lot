@@ -1,3 +1,12 @@
+lot (0.3.0) unstable; urgency=medium
+
+  * Fix incorrect print option
+  * Rename functions
+  * Fix issue that do not call unlock when there are problems
+  * Refactor install/uninstall/update and add lot
+
+ -- Hyeonki Hong <hhk7734@gmail.com>  Thu, 23 Jan 2020 15:25:05 +0900
+
 lot (0.2.1) unstable; urgency=medium
 
   * Fix crash that occurs when packaging on launchpad
