@@ -1,3 +1,7 @@
+![license](https://img.shields.io/github/license/loliot/lot)
+![version](https://img.shields.io/github/v/tag/loliot/lot?sort=semver)
+![language](https://img.shields.io/github/languages/top/loliot/lot)
+
 # lot
 
 ## Installation
